@@ -35,13 +35,11 @@
                 {{ user.username }}
               </a>
               <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" href="{% url 'password_change' %}">
-                  Change password</a></li>
                 <li>
                   <hr class="dropdown-divider">
                 </li>
                 <li>
-                  <form method="post" action="{% url 'logout' %}" 
+                  <form method="post" action="{% url 'account_logout' %}" 
                     style="display:inline;">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-link nav-link"
@@ -55,8 +53,8 @@
         </div>
         <div class="mr-auto">
           <form class="form d-flex">
-            <a href="{% url 'login' %}" class="btn btn-outline-secondary">Log in</a>
-            <a href="{% url 'signup' %}" class="btn btn-primary ms-2">Sign up</a>
+            <a href="{% url 'account_login' %}" class="btn btn-outline-secondary">Log in</a>
+            <a href="{% url 'account_signup' %}" class="btn btn-primary ms-2">Sign up</a>
           </form>
         </div>
         {% endif %}
