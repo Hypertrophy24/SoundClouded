@@ -1,0 +1,54 @@
+<!-- Music/templates/music/play.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Weather-based Spotify Playlist</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        .playlist-container {
+            text-align: center;
+            margin-top: 50px;
+        }
+        .playlist-container img {
+            max-width: 300px;
+            border-radius: 10px;
+        }
+        .playlist-container h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        .playlist-container p {
+            font-size: 1.2em;
+        }
+        .playlist-container a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #1DB954;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 50px;
+        }
+        .playlist-container a:hover {
+            background-color: #1ed760;
+        }
+    </style>
+</head>
+<body>
+    <div class="playlist-container">
+        <h1>Current Weather: {{ weather_description }}</h1>
+        <p>Selected Genre: <strong>{{ genre }}</strong></p>
+        <h2>Now Playing: {{ playlist_name }}</h2>
+        {% if playlist_image %}
+            <img src="{{ playlist_image }}" alt="{{ playlist_name }}">
+        {% endif %}
+        <p>
+            <a href="{{ playlist_uri }}">Open Playlist in Spotify</a>
+        </p>
+    </div>
+</body>
+</html>
