@@ -11,4 +11,5 @@
         {{ form|crispy }}
         <button class="btn btn-success ms-2">Log In</button>
     </form>
+    <a href="{% url 'socialaccount_login' 'spotify' %}">Login with Spotify</a>
 {% endblock %}

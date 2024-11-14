@@ -32,7 +32,7 @@
         <p>Selected Genre: <strong>{{ genre }}</strong></p>
         <h2>Select a Playlist to Play</h2>
         {% for playlist in playlists %}
-            <div class="playlist">
+            <div class="playlist"></div>
                 <h2>{{ playlist.name }}</h2>
                 {% if playlist.image %}
                     <img src="{{ playlist.image }}" alt="{{ playlist.name }}" width="200">
