@@ -72,7 +72,7 @@ def index(request):
     weather_description = get_weather_description()
     if weather_description:
         request.session['weather_description'] = weather_description
-        return redirect(reverse('music:play'))
+        return redirect(reverse('music:home'))
     else:
         return HttpResponse("Error fetching weather data.")
 
@@ -113,4 +113,4 @@ def play(request):
         'genre': genre,
         'playlists': playlist_data,
     }
-    return render(request, 'play.html', context)
+    return render(request, 'home.html', context)

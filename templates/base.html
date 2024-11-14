@@ -39,7 +39,7 @@
                   <hr class="dropdown-divider">
                 </li>
                 <li>
-                  <form method="post" action="{% url 'account_logout' %}" 
+                  <form method="post" action="{% url 'signup' %}" 
                     style="display:inline;">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-link nav-link"
@@ -53,8 +53,8 @@
         </div>
         <div class="mr-auto">
           <form class="form d-flex">
-            <a href="{% url 'account_login' %}" class="btn btn-outline-secondary">Log in</a>
-            <a href="{% url 'account_signup' %}" class="btn btn-primary ms-2">Sign up</a>
+            <a href="{% url 'signup' %}" class="btn btn-outline-secondary">Log in</a>
+            <a href="{% url 'signup' %}" class="btn btn-primary ms-2">Sign up</a>
           </form>
         </div>
         {% endif %}
