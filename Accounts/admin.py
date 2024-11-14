@@ -9,8 +9,11 @@ class CustomUserAdmin(UserAdmin):
     form = CustomUserChangeForm
     model = CustomUser
     list_display = ['email', 'username', 'spotifyURI', 'is_staff']
-
-    fieldsets = UserAdmin.fieldsets + ((None, {'fields': ('spotifyURI',)}),)
-    add_fieldsets = UserAdmin.add_fieldsets + ((None, {'fields': ('spotifyURI',)}),)
+    fieldsets = UserAdmin.fieldsets + (
+        (None, {'fields': ('spotifyURI',)}),
+    )
+    add_fieldsets = UserAdmin.add_fieldsets + (
+        (None, {'fields': ('spotifyURI',)}),
+    )
 
 admin.site.register(CustomUser, CustomUserAdmin)
