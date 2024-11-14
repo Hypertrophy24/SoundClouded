@@ -11,7 +11,7 @@ import random
 from django.views.generic import TemplateView
 
 class HomePageView(TemplateView):
-    template_name = 'home.html'
+    template_name = 'play.html'
 def get_weather_description():
     url = 'http://api.weatherstack.com/current'
     params = {

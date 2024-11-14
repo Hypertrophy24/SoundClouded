@@ -4,12 +4,6 @@
 {% block title %}Home | SoundClouded{% endblock %}
 
 {% block content %}
-<style>
-    .playlist-container {
-            text-align: center;
-            margin-top: 50px;
-        }
-</style>
 <div class="container mt-4 text-center" style="color: #c0bebe; background-color: #333; min-height: 100vh; padding: 20px;">
     <h1 style="color: #FF7F50; text-shadow: 1px 1px 2px black;">Welcome to SoundClouded</h1>
     {% if user.is_authenticated %}
@@ -21,8 +15,8 @@
         </form>
     {% else %}
         <p style="color: #c0bebe; text-shadow: 1px 1px 2px black;">Please log in to access personalized music recommendations.</p>
-        <a href="{% url 'signup' %}" class="btn btn-outline-secondary me-2">Log In</a>
-        <a href="{% url 'signup' %}" class="btn btn-outline-secondary">Sign Up</a>
+        <a href="{% url 'account_login' %}" class="btn btn-outline-secondary me-2">Log In</a>
+        <a href="{% url 'account_signup' %}" class="btn btn-outline-secondary">Sign Up</a>
     {% endif %}
 
     <hr style="border-color: #FF7F50;">
@@ -36,6 +30,7 @@
             <button type="submit" class="btn btn-primary" style="background-color: #FF7F50; border: none;">Search</button>
         </form>
     </div>
+
     <div class="playlist-container">
         <h1>Current Weather: {{ weather_description }}</h1>
         <p>Selected Genre: <strong>{{ genre }}</strong></p>
