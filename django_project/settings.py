@@ -149,7 +149,6 @@ LOGOUT_REDIRECT_URL = "home"
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
-<<<<<<< HEAD
 # Additional settings for Weatherstack API and Spotify API
 # These will be loaded from the .env file
 
@@ -161,21 +160,3 @@ LOCATION = env('LOCATION')  # Default location, or you can set it in your applic
 SPOTIFY_CLIENT_ID = env('SPOTIFY_CLIENT_ID')
 SPOTIFY_CLIENT_SECRET = env('SPOTIFY_CLIENT_SECRET')
 SPOTIFY_REDIRECT_URI = env('SPOTIFY_REDIRECT_URI')
-=======
-SITE_ID = 1
-
-AUTHENTICATION_BACKENDS = [
-    "django.contrib.auth.backends.ModelBackend",
-    "allauth.account.auth_backends.AuthenticationBackend",
-]
-
-SOCIALACCOUNT_PROVIDERS = {
-    "spotify": {
-        "APP": {
-            "client_id": "8313462db77a40e297078f1bd0a4cc8c",
-            "secret": "6aa7bd1d6b27470c8e1cd32f285aec21",
-        }
-    }
-}
-
->>>>>>> 5c00fd4ea7bba24ff0e74c0161eab32a74edb418
