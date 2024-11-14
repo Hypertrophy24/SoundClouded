@@ -1,17 +1,34 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 
-{% block title %}Home{% endblock %}
+{% block title %}Home | SoundClouded{% endblock %}
 
 {% block content %}
+<div class="container mt-4 text-center" style="color: #c0bebe; background-color: #333; min-height: 100vh; padding: 20px;">
+    <h1 style="color: #FF7F50; text-shadow: 1px 1px 2px black;">Welcome to SoundClouded</h1>
     {% if user.is_authenticated %}
-        <p>Welcome, {{ user.username }}! You are {{ user.age }} years old.</p>
+        <p style="text-shadow: 1px 1px 2px black;">Welcome back, <strong>{{ user.username }}</strong>!</p>
+        <p style="text-shadow: 1px 1px 2px black;">Your profile says you're {{ user.age }} years old.</p>
         <form action="{% url 'account_logout' %}" method="post">
             {% csrf_token %}
-            <button class="btn btn-success ms-2"="submit">Log Out</button>
+            <button class="btn btn-secondary mt-2" type="submit">Log Out</button>
+        </form>
     {% else %}
-        <p> You are not logged in</p>
-        <a href="{% url 'account_login' %}">Log In</a> |
-        <a href="{% url 'account_signup' %}">Sign Up</a>
+        <p style="color: #c0bebe; text-shadow: 1px 1px 2px black;">Please log in to access personalized music recommendations.</p>
+        <a href="{% url 'account_login' %}" class="btn btn-outline-secondary me-2">Log In</a>
+        <a href="{% url 'account_signup' %}" class="btn btn-outline-secondary">Sign Up</a>
     {% endif %}
+
+    <hr style="border-color: #FF7F50;">
+
+    <!-- Placeholder for Weather Search Feature -->
+    <div class="mt-4" style="color: #c0bebe;">
+        <h3 style="color: #FF7F50; text-shadow: 1px 1px 2px black;">Get Music Recommendations Based on the Weather</h3>
+        <p style="text-shadow: 1px 1px 2px black;">Enter your city to see the perfect playlist for today’s weather.</p>
+        <form method="get" action="#">
+            <input type="text" name="city" placeholder="Enter city" class="form-control mb-3" style="max-width: 300px; margin: auto;">
+            <button type="submit" class="btn btn-primary" style="background-color: #FF7F50; border: none;">Search</button>
+        </form>
+    </div>
+</div>
 {% endblock %}
