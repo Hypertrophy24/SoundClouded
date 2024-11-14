@@ -30,5 +30,21 @@
             <button type="submit" class="btn btn-primary" style="background-color: #FF7F50; border: none;">Search</button>
         </form>
     </div>
+
+    <div class="playlist-container">
+        <h1>Current Weather: {{ weather_description }}</h1>
+        <p>Selected Genre: <strong>{{ genre }}</strong></p>
+        <h2>Select a Playlist to Play</h2>
+        {% for playlist in playlists %}
+            <div class="playlist">
+                <h2>{{ playlist.name }}</h2>
+                {% if playlist.image %}
+                    <img src="{{ playlist.image }}" alt="{{ playlist.name }}" width="200">
+                {% endif %}
+                <iframe src="{{ playlist.embed_url }}" allowtransparency="true" allow="encrypted-media"></iframe>
+            </div>
+        {% endfor %}
+    </div>
+    
 </div>
 {% endblock %}
