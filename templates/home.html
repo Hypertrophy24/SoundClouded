@@ -1,8 +1,54 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
-
+{%load static%}
 {% block title %}Home | SoundClouded{% endblock %}
-
+<style>
+    body {
+        background: linear-gradient(to bottom, #1db954, #191414);
+        color: #fff;
+    }
+    .weather-container {
+        margin-top: 30px;
+    }
+    .playlist-container {
+        margin-top: 50px;
+    }
+    .playlist h2 {
+        font-size: 1.5em;
+        color: #1db954;
+    }
+    .playlist img {
+        max-width: 100%;
+        height: auto;
+    }
+    .track-list-container {
+        max-height: 400px;
+        overflow-y: auto;
+        margin-top: 20px;
+    }
+    .track-list li {
+        margin-bottom: 10px;
+    }
+    .track-list li:hover {
+        cursor: pointer;
+        text-decoration: underline;
+    }
+    .navbar {
+        background-color: #191414;
+    }
+    .active {
+        background-color: #1db954 !important;
+        color: #fff !important;
+    }
+    .btn-play {
+        background-color: #1db954;
+        border-color: #1db954;
+    }
+    .btn-play:hover {
+        background-color: #1ed760;
+        border-color: #1ed760;
+    }
+</style>
 {% block content %}
 <div class="container mt-4 text-center" style="color: #c0bebe; background-color: #333; min-height: 100vh; padding: 20px;">
     <h1 style="color: #FF7F50; text-shadow: 1px 1px 2px black;">Welcome to SoundClouded</h1>
@@ -31,20 +77,190 @@
         </form>
     </div>
 
-    <div class="playlist-container">
-        <h1>Current Weather: {{ weather_description }}</h1>
-        <p>Selected Genre: <strong>{{ genre }}</strong></p>
-        <h2>Select a Playlist to Play</h2>
-        {% for playlist in playlists %}
-            <div class="playlist">
-                <h2>{{ playlist.name }}</h2>
-                {% if playlist.image %}
-                    <img src="{{ playlist.image }}" alt="{{ playlist.name }}" width="200">
-                {% endif %}
-                <iframe src="{{ playlist.embed_url }}" allowtransparency="true" allow="encrypted-media"></iframe>
-            </div>
-        {% endfor %}
-    </div>
+    <body>
+        
     
+        <div class="container">
+            <!-- Weather Information -->
+            <div class="weather-container text-center">
+                <h1>Current Weather in {{ LOCATION }}</h1>
+                {% if weather_data.icon %}
+                    <img src="{{ weather_data.icon }}" alt="Weather Icon">
+                {% endif %}
+                <h2>{{ weather_data.description }}</h2>
+                <p>Temperature: {{ weather_data.temperature }}°C</p>
+                <p>Feels Like: {{ weather_data.feelslike }}°C</p>
+                <p>Wind: {{ weather_data.wind_speed }} km/h {{ weather_data.wind_dir }}</p>
+                <p>Humidity: {{ weather_data.humidity }}%</p>
+            </div>
+    
+            <!-- Playlist Information -->
+            <div class="playlist-container text-center">
+                <h2>Recommended Playlist: {{ playlist_name }}</h2>
+                {% if playlist_image %}
+                    <img src="{{ playlist_image }}" alt="{{ playlist_name }}" class="img-fluid">
+                {% endif %}
+    
+                <!-- Scrollable Playlist Tracks -->
+                <div class="track-list-container">
+                    <ul class="list-group track-list">
+                        {% for item in tracks %}
+                            {% with track=item.track %}
+                                <li class="list-group-item list-group-item-action bg-dark text-white" data-uri="{{ track.uri }}">
+                                    {{ track.name }} by {% for artist in track.artists %}{{ artist.name }}{% if not forloop.last %}, {% endif %}{% endfor %}
+                                </li>
+                            {% endwith %}
+                        {% endfor %}
+                    </ul>
+                </div>
+    
+                <!-- Play Button -->
+                <button id="play-button" class="btn btn-success mt-3 btn-play">Play Selected Track</button>
+                <!-- Save Playlist Button -->
+                <button id="save-playlist-button" class="btn btn-primary mt-3">Save Playlist to My Spotify</button>
+            </div>
+        </div>
+    
+        <!-- Include the Spotify Web Playback SDK -->
+        <script src="https://sdk.scdn.co/spotify-player.js"></script>
+    
+        <!-- Include jQuery and Bootstrap JS -->
+        <script src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    
+        <!-- Initialize Spotify Player -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const playButton = document.getElementById('play-button');
+                const savePlaylistButton = document.getElementById('save-playlist-button');
+                let selectedTrackUri = null;
+                let deviceId = null;
+    
+                document.querySelectorAll('.track-list li').forEach(function(item) {
+                    item.addEventListener('click', function() {
+                        selectedTrackUri = this.getAttribute('data-uri');
+                        console.log('Selected Track URI:', selectedTrackUri);
+                        // Highlight the selected track
+                        document.querySelectorAll('.track-list li').forEach(function(li) {
+                            li.classList.remove('active');
+                        });
+                        this.classList.add('active');
+                    });
+                });
+    
+                window.onSpotifyWebPlaybackSDKReady = () => {
+                    const token = '{{ access_token }}';
+                    console.log('Access Token:', token);
+    
+                    const player = new Spotify.Player({
+                        name: 'SoundClouded Player',
+                        getOAuthToken: cb => { cb(token); },
+                        volume: 0.5
+                    });
+    
+                    // Error handling
+                    player.addListener('initialization_error', ({ message }) => {
+                        console.error('Initialization Error:', message);
+                    });
+                    player.addListener('authentication_error', ({ message }) => {
+                        console.error('Authentication Error:', message);
+                    });
+                    player.addListener('account_error', ({ message }) => {
+                        console.error('Account Error:', message);
+                    });
+                    player.addListener('playback_error', ({ message }) => {
+                        console.error('Playback Error:', message);
+                    });
+    
+                    // Ready
+                    player.addListener('ready', ({ device_id }) => {
+                        console.log('Player is ready with device ID:', device_id);
+                        deviceId = device_id;
+                        // Transfer playback to the new device
+                        transferPlayback(device_id);
+                    });
+    
+                    player.connect();
+    
+                    // Play button event listener
+                    playButton.addEventListener('click', () => {
+                        if (selectedTrackUri) {
+                            playTrack(deviceId, selectedTrackUri);
+                        } else {
+                            alert('Please select a track.');
+                        }
+                    });
+    
+                    // Save playlist button event listener
+                    savePlaylistButton.addEventListener('click', function() {
+                        fetch("{% url 'save_playlist' %}", {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRFToken': '{{ csrf_token }}',
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({})
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.error) {
+                                alert('Error: ' + data.error);
+                            } else {
+                                alert(data.message);
+                                // Optionally, redirect to the playlist URL
+                                // window.open(data.playlist_url, '_blank');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error saving playlist:', error);
+                            alert('Error saving playlist. Please try again.');
+                        });
+                    });
+                };
+    
+                function transferPlayback(device_id) {
+                    fetch('https://api.spotify.com/v1/me/player', {
+                        method: 'PUT',
+                        body: JSON.stringify({ device_ids: [device_id], play: false }),
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer {{ access_token }}'
+                        },
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(err => { throw err; });
+                        }
+                        console.log('Playback transferred to device:', device_id);
+                    })
+                    .catch(error => {
+                        console.error('Error transferring playback:', error);
+                    });
+                }
+    
+                function playTrack(device_id, track_uri) {
+                    console.log('Attempting to play track:', track_uri, 'on device:', device_id);
+    
+                    fetch(`https://api.spotify.com/v1/me/player/play?device_id=${device_id}`, {
+                        method: 'PUT',
+                        body: JSON.stringify({ uris: [track_uri] }),
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer {{ access_token }}'
+                        },
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(err => { throw err; });
+                        }
+                        console.log('Playback started successfully.');
+                    })
+                    .catch(error => {
+                        console.error('Error playing track:', error);
+                        alert('Error playing track. Please try again.');
+                    });
+                }
+            });
+        </script>
 </div>
 {% endblock %}
