@@ -11,7 +11,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-
+import environ 
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,7 +27,6 @@ SECRET_KEY = "django-insecure-k-s_+-cs7cgkripi!ia0r5n^b_%_yx(tsbg^xvp+6f3eiuvpm8
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -173,8 +173,7 @@ SPOTIFY_REDIRECT_URI = env('SPOTIFY_REDIRECT_URI')
 SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG')
 ALLOWED_HOSTS = []
-
-SESSION_COOKIE_SAMESITE = None
-SESSION_COOKIE_SECURE = False
-SESSION_COOKIE_SAMESITE = None
-SESSION_COOKIE_SECURE = True  # Requires HTTPS
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'Music', 'static'),  # Adjust the path to your app's static folder
+]
