@@ -7,18 +7,21 @@ import requests
 import spotipy
 from django.conf import settings
 from django.shortcuts import render, redirect
-from django.conf import settings
 from django.urls import reverse
 from django.http import HttpResponse, JsonResponse
-import spotipy
 from spotipy import Spotify, SpotifyOAuth
 from django.views.generic import TemplateView
-import os
+
+# Setup logging
+logger = logging.getLogger(__name__)
+
 class HomePageView(TemplateView):
     template_name = 'play.html'
+
 def favicon(request):
     # Return an empty response with a 204 No Content status
     return HttpResponse(status=204)
+
 def get_weather_data():
     url = 'http://api.weatherstack.com/current'
     params = {
@@ -60,118 +63,63 @@ def get_genre_from_weather(weather_description):
 genre_playlists = {
     'Rainy Day': [
         '37i9dQZF1DXbvABJXBIyiY',  # Rainy Day
-        '37i9dQZF1DXdwTUxmGKrdN',  # Rainy Day Jazz
-        '37i9dQZF1DWZkhexA0Z7aP',  # Rainy Day Mood
-        '37i9dQZF1DXaXDsfv6nvZ5',  # Rainy Day Blues
-        '37i9dQZF1DX3woOVffrpln',  # Rainy Day Instrumental
-        '37i9dQZF1DX2Z5uXwixuEP',  # Rainy Day Relax
-        '37i9dQZF1DXdV4VkZg6NlO',  # Rainy Day Beats
-        '37i9dQZF1DX6bBjHfdRnza',  # Rainy Day Coffee
-        '37i9dQZF1DWV0gynK7G6pD',  # Rain Sounds
-        '37i9dQZF1DX2r0FByV5U4C',  # Rainy Day Vibes
-        '37i9dQZF1DX0MuOvUqmxDz',  # Rainy Day Pop
-        '37i9dQZF1DX6VdMW310YC7',  # Rainy Day Indie
-        '37i9dQZF1DX889U0CL85jj',  # Rainy Day Chill
-        '37i9dQZF1DX2cEUXdJJLVG',  # Rainy Day Classical
-        '37i9dQZF1DXdEw8dT2n5yI',  # Rainy Day Soul
-        '37i9dQZF1DWUzFXarNiofw',  # Rainy Day R&B
-        '37i9dQZF1DX9XIFQuFvzM4',  # Rainy Day Folk
-        '37i9dQZF1DX5Q27plkaOQ3',  # Rainy Day Acoustic
-        '37i9dQZF1DX0SM0LYsmbMT',  # Rainy Day Piano
-        '37i9dQZF1DWXe9gFZP0gtP',  # Rainy Day Sleep
-        # Add more playlist IDs to reach 50
+        '37i9dQZF1DX8ymr6UES7vc',  # Relaxing Massage
+        '37i9dQZF1DX6QDedCAYqRI',  # Rain Sounds
+        '37i9dQZF1DX6VdMW310YC7',  # Lo-Fi Beats
+        '37i9dQZF1DX9sIqqvKsjG8',  # Evening Chill
+        '37i9dQZF1DX4wta20PHgwo',  # Rainy Day Jazz
+        '37i9dQZF1DX4sWSpwq3LiO',  # Peaceful Piano
+        '37i9dQZF1DWYfU0UXHXpkA',  # Ambient Chill
+        '37i9dQZF1DX0SM0LYsmbMT',  # Peaceful Guitar
+        '37i9dQZF1DX7cZxYLqLUJl',  # Deep Focus
     ],
     'Chill': [
         '37i9dQZF1DX4WYpdgoIcn6',  # Chill Hits
         '37i9dQZF1DX889U0CL85jj',  # Chill Vibes
-        '37i9dQZF1DX6VdMW310YC7',  # Lo-Fi Beats
-        '37i9dQZF1DX9sIqqvKsjG8',  # Evening Chill
-        '37i9dQZF1DX0SM0LYsmbMT',  # Chill Tracks
-        '37i9dQZF1DX4E3UdUs7fUx',  # Chillout Lounge
-        '37i9dQZF1DWVOV3mP1TySi',  # Chilled R&B
-        '37i9dQZF1DX6xZZEgC9Ubl',  # Chill Folk
-        '37i9dQZF1DXdPDLmy88MDk',  # Lofi Beats
-        '37i9dQZF1DX6uQnoHESB3u',  # Chill House
+        '37i9dQZF1DWV7EzJMK2FUI',  # Chillout Lounge
+        '37i9dQZF1DX4E3UdUs7fUx',  # Chilled R&B
         '37i9dQZF1DX2yvmlOdMYzV',  # Chill Pop
-        '37i9dQZF1DX2TRYkJECvfC',  # Late Night Vibes
-        '37i9dQZF1DWU0ScTcjJBdj',  # Bedroom Pop
-        '37i9dQZF1DX6ziVCJnEm59',  # Your Favorite Coffeehouse
-        '37i9dQZF1DX3Ogo9pFvBkY',  # Deep Focus
-        '37i9dQZF1DX4sWSpwq3LiO',  # Peaceful Piano
-        '37i9dQZF1DX8Uebhn9wzrS',  # Instrumental Study
-        '37i9dQZF1DX0hvSv9Rf41p',  # Chill Instrumental Beats
-        '37i9dQZF1DX0MLFaUdXnjA',  # Chill Out Music
-        '37i9dQZF1DX4uPi2roRUwU',  # Chill Latino
-        # Add more playlist IDs to reach 50
+        '37i9dQZF1DX6uQnoHESB3u',  # Chill House
+        '37i9dQZF1DX2P5TYywO77A',  # Evening Acoustic
+        '37i9dQZF1DX6VdMW310YC7',  # Lo-Fi Beats
+        '37i9dQZF1DX0hvSv9Rf41p',  # Instrumental Chill
+        '37i9dQZF1DX6z20IXmBjWI',  # Chilled Out
     ],
     'Happy': [
         '37i9dQZF1DX3rxVfibe1L0',  # Mood Booster
-        '37i9dQZF1DX1H4LbvY4OJi',  # Happy Hits!
-        '37i9dQZF1DX0UrRvztWcAU',  # Have a Great Day!
+        '37i9dQZF1DXdPec7aLTmlC',  # Feelin' Good
         '37i9dQZF1DX7KNKjOK0o75',  # Good Vibes
-        '37i9dQZF1DX7SEhw42DW5b',  # Feelin' Good
-        '37i9dQZF1DWYBO1MoTDhZI',  # Wake Up Happy
+        '37i9dQZF1DX0UrRvztWcAU',  # Have a Great Day!
+        '37i9dQZF1DX1H4LbvY4OJi',  # Happy Hits!
         '37i9dQZF1DX2sUQwD7tbmL',  # Songs to Sing in the Shower
         '37i9dQZF1DX2A29LI7xHn1',  # Just Smile
-        '37i9dQZF1DX0s5kDXi1oC5',  # It's a Hit!
-        '37i9dQZF1DX6ALfRKlHn1t',  # Happy Folk
-        '37i9dQZF1DX3S2ONCFIYHU',  # Confidence Boost
-        '37i9dQZF1DX5IDTimEWoTd',  # Young & Free
-        '37i9dQZF1DWZjqjZMudx9T',  # Happy Pop Hits
-        '37i9dQZF1DWVOMXLzSabd5',  # Sunny Day
-        '37i9dQZF1DX1IeqVkK7Ebc',  # Pop Rising
-        '37i9dQZF1DX2YSAziAIYdR',  # Happy Drive
-        '37i9dQZF1DX2F5hV9dV1jG',  # Mood Ring
         '37i9dQZF1DX4fpCWaHOned',  # Good Vibes Only
-        '37i9dQZF1DWXcA4cE8AqW6',  # Happy Beats
-        '37i9dQZF1DX8tZsk68tuDw',  # Smile :)
-        # Add more playlist IDs to reach 50
+        '37i9dQZF1DWYBO1MoTDhZI',  # Wake Up Happy
+        '37i9dQZF1DX3zN05ePDN6Q',  # It's a Hit!
     ],
     'Winter': [
-        '37i9dQZF1DX2MyUCsl25eb',  # Cozy Christmas
-        '37i9dQZF1DX0Yxoavh5qJV',  # Winter Chillout
-        '37i9dQZF1DWZLcGGC0HJbc',  # Winter Acoustic
-        '37i9dQZF1DX2xKqsL1SVWb',  # Winter Vibes
-        '37i9dQZF1DXdPec7aLTmlC',  # Winter Sleep
-        '37i9dQZF1DWV5vqkTng2MA',  # Winter Songs
-        '37i9dQZF1DX7M1twJ8D6TS',  # Winter Folk
-        '37i9dQZF1DX2yvmlOdMYzV',  # Chill Pop
-        '37i9dQZF1DXc6IFF23C9jj',  # Winter Run
-        '37i9dQZF1DX6xZZEgC9Ubl',  # Chill Folk
-        '37i9dQZF1DXaDPSVSkBhhM',  # Winter Instrumental
-        '37i9dQZF1DX3bSdu6sAEDF',  # Winter Jazz
-        '37i9dQZF1DX6VdMW310YC7',  # Lo-Fi Beats
-        '37i9dQZF1DX8ymr6UES7vc',  # Relaxing Massage
+        '37i9dQZF1DX4H7FFUM2osB',  # Winter Acoustic
+        '37i9dQZF1DXa8NOEUWPn9W',  # Winter Chillout
+        '37i9dQZF1DX8CopunbDxgW',  # Classical Essentials
+        '37i9dQZF1DX7K31D69s4M1',  # Jazz for Sleep
+        '37i9dQZF1DX6VDO8a6cQME',  # Sleep
+        '37i9dQZF1DX1BzILRveYHb',  # Peaceful Meditation
         '37i9dQZF1DWWEJlAGA9gs0',  # Deep Sleep
-        '37i9dQZF1DX6QDedCAYqRI',  # Rain Sounds
-        '37i9dQZF1DX8SfyqmSFDwe',  # Soft Winter
-        '37i9dQZF1DX4sWSpwq3LiO',  # Peaceful Piano
-        '37i9dQZF1DX8CopunbDxgW',  # Winter Classical
-        '37i9dQZF1DX0SM0LYsmbMT',  # Peaceful Guitar
-        # Add more playlist IDs to reach 50
+        '37i9dQZF1DX6xZZEgC9Ubl',  # Chill Folk
+        '37i9dQZF1DXbttAJcbphhZ',  # Piano in the Background
+        '37i9dQZF1DWZz0dmtcndFR',  # Calm Vibes
     ],
     'Pop': [
         '37i9dQZF1DXcBWIGoYBM5M',  # Today's Top Hits
         '37i9dQZF1DX1IeqVkK7Ebc',  # Pop Rising
-        '37i9dQZF1DXarRysLJmuju',  # Pop Remix
-        '37i9dQZF1DXbTxeAdrVG2l',  # Hot Hits USA
+        '37i9dQZF1DWUa8ZRTfalHk',  # All Out 2010s
         '37i9dQZF1DX4dyzvuaRJ0n',  # Confidence Boost
-        '37i9dQZF1DX2A29LI7xHn1',  # Just Smile
-        '37i9dQZF1DX2sUQwD7tbmL',  # Songs to Sing in the Shower
-        '37i9dQZF1DX6aTaZa0K6VA',  # Pop Co-Op
-        '37i9dQZF1DX5Ejj0EkURtP',  # Pop Chillout
-        '37i9dQZF1DWVlYsZJXqdym',  # Pop Up
-        '37i9dQZF1DWXti3N4Wp5xy',  # Pop Right Now
-        '37i9dQZF1DX4JAvHpjipBk',  # Teen Party
-        '37i9dQZF1DX1lVhptIYRda',  # Pop Ballads
-        '37i9dQZF1DWWSrwtXj8amH',  # Hits du Moment
-        '37i9dQZF1DX5IDTimEWoTd',  # Young & Free
-        '37i9dQZF1DWYcDQ1hSjOpY',  # New Music Friday
-        '37i9dQZF1DXa6YOhGMjjgx',  # Pop Rock
-        '37i9dQZF1DX4eRPd9frC1m',  # Singled Out
-        '37i9dQZF1DWVRSukIED0e9',  # Pop All Day
         '37i9dQZF1DX2A62XvEEcJf',  # Pop International
-        # Add more playlist IDs to reach 50
+        '37i9dQZF1DWYfVqUciU2jI',  # New Music Friday
+        '37i9dQZF1DXe2bobNYDtW8',  # Pop Right Now
+        '37i9dQZF1DX0s5kDXi1oC5',  # It's a Hit!
+        '37i9dQZF1DX5IDTimEWoTd',  # Young & Free
+        '37i9dQZF1DX5WUW0kSecNe',  # Metropolis
     ],
 }
 
@@ -223,8 +171,6 @@ def play(request):
 
     access_token = token_info['access_token']
 
-    access_token = token_info['access_token']
-    access_token = token_info['access_token']
     weather_data = get_weather_data()
     if not weather_data:
         return HttpResponse("Error fetching weather data.")
@@ -236,14 +182,10 @@ def play(request):
         return HttpResponse("No playlists available for the selected genre.")
 
     sp = Spotify(auth=access_token)
-    playlist_id = playlists[0]  # Select the first playlist
+    playlist_id = random.choice(playlists)  # Randomly select a playlist
     request.session['playlist_id'] = playlist_id  # Store playlist ID in session
 
     playlist_info = sp.playlist(playlist_id)
-    tracks = playlist_info['tracks']['items']
-
-    # Fetch tracks for the first playlist
-    playlist_info = sp.playlist(playlists[0])
     tracks = playlist_info['tracks']['items']
 
     context = {
