@@ -210,7 +210,20 @@ def play(request):
     token_info = request.session.get('token_info', None)
     if not token_info:
         return redirect(reverse('index'))
+    sp_oauth = SpotifyOAuth(
+        client_id=settings.SPOTIFY_CLIENT_ID,
+        client_secret=settings.SPOTIFY_CLIENT_SECRET,
+        redirect_uri=settings.SPOTIFY_REDIRECT_URI
+    )
 
+    # Check if the token is expired and refresh it if necessary
+    if sp_oauth.is_token_expired(token_info):
+        token_info = sp_oauth.refresh_access_token(token_info['refresh_token'])
+        request.session['token_info'] = token_info
+
+    access_token = token_info['access_token']
+
+    access_token = token_info['access_token']
     access_token = token_info['access_token']
     weather_data = get_weather_data()
     if not weather_data:
