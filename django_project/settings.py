@@ -150,8 +150,8 @@ AUTHENTICATION_BACKENDS = [
 SOCIALACCOUNT_PROVIDERS = {
     "spotify": {
         "APP": {
-            "client_id": "8313462db77a40e297078f1bd0a4cc8c",
-            "secret": "6aa7bd1d6b27470c8e1cd32f285aec21",
+            "client_id": "7784a2b1e1344a2db317361f967bfb31",
+            "secret": "5c589f299e294566a34d86e50f4cea65",
         }
     }
 }

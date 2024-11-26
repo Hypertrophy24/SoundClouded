@@ -125,7 +125,7 @@ genre_playlists = {
 
 
 def index(request):
-    scope = "streaming user-read-email user-read-private playlist-modify-public playlist-modify-private user-modify-playback-state"
+    scope = "user-read-email user-read-private playlist-modify-public playlist-modify-private"
     sp_oauth = SpotifyOAuth(
         client_id=settings.SPOTIFY_CLIENT_ID,
         client_secret=settings.SPOTIFY_CLIENT_SECRET,
@@ -158,6 +158,7 @@ def play(request):
     token_info = request.session.get('token_info', None)
     if not token_info:
         return redirect(reverse('index'))
+
     sp_oauth = SpotifyOAuth(
         client_id=settings.SPOTIFY_CLIENT_ID,
         client_secret=settings.SPOTIFY_CLIENT_SECRET,
@@ -186,21 +187,16 @@ def play(request):
     request.session['playlist_id'] = playlist_id  # Store playlist ID in session
 
     playlist_info = sp.playlist(playlist_id)
-    tracks = playlist_info['tracks']['items']
 
     context = {
-        'access_token': access_token,
         'playlist_id': playlist_id,
-        'tracks': tracks,
         'playlist_name': playlist_info['name'],
         'playlist_image': playlist_info['images'][0]['url'] if playlist_info['images'] else None,
         'weather_data': weather_data,
         'genre': genre,
         'LOCATION': settings.LOCATION,
-        'csrf_token': '',  # Include this if you need CSRF token in template
     }
     return render(request, 'home.html', context)
-
 def save_playlist(request):
     if request.method != 'POST':
         return HttpResponse(status=405)  # Method Not Allowed
