@@ -22,16 +22,17 @@ def favicon(request):
     # Return an empty response with a 204 No Content status
     return HttpResponse(status=204)
 
-def get_weather_data():
+def get_weather_data(location=None):
     url = 'http://api.weatherstack.com/current'
     params = {
         'access_key': settings.WEATHERSTACK_API_KEY,
-        'query': settings.LOCATION
+        'query': location if location else settings.LOCATION
     }
     response = requests.get(url, params=params)
     data = response.json()
     if 'current' in data:
         current = data['current']
+        location_name = data['location']['name']
         weather_data = {
             'description': current['weather_descriptions'][0],
             'temperature': current['temperature'],
@@ -40,6 +41,7 @@ def get_weather_data():
             'wind_dir': current['wind_dir'],
             'humidity': current['humidity'],
             'icon': current['weather_icons'][0] if 'weather_icons' in current and current['weather_icons'] else None,
+            'location_name': location_name,
         }
         return weather_data
     else:
@@ -59,67 +61,66 @@ def get_genre_from_weather(weather_description):
     else:
         return 'Pop'  # Default genre
 
-# Mapping genres to a list of playlist IDs
 genre_playlists = {
     'Rainy Day': [
         '37i9dQZF1DXbvABJXBIyiY',  # Rainy Day
-        '37i9dQZF1DX8ymr6UES7vc',  # Relaxing Massage
-        '37i9dQZF1DX6QDedCAYqRI',  # Rain Sounds
-        '37i9dQZF1DX6VdMW310YC7',  # Lo-Fi Beats
+        '37i9dQZF1DX4uPi2roRUwU',  # Rain Sounds
+        '37i9dQZF1DWZd79rJ6a7lp',  # Jazz in the Rain
         '37i9dQZF1DX9sIqqvKsjG8',  # Evening Chill
-        '37i9dQZF1DX4wta20PHgwo',  # Rainy Day Jazz
+        '37i9dQZF1DXcNb6Ba0LuVc',  # Deep Focus
+        '37i9dQZF1DWXLeA8Omikj7',  # Chill Lofi Study Beats
+        '37i9dQZF1DX7cZxYLqLUJl',  # Atmospheric Calm
+        '37i9dQZF1DX7YCknf2jT6s',  # Rainy Day Jazz
+        '37i9dQZF1DXbITWG1ZJKYt',  # Acoustic Concentration
         '37i9dQZF1DX4sWSpwq3LiO',  # Peaceful Piano
-        '37i9dQZF1DWYfU0UXHXpkA',  # Ambient Chill
-        '37i9dQZF1DX0SM0LYsmbMT',  # Peaceful Guitar
-        '37i9dQZF1DX7cZxYLqLUJl',  # Deep Focus
     ],
     'Chill': [
         '37i9dQZF1DX4WYpdgoIcn6',  # Chill Hits
         '37i9dQZF1DX889U0CL85jj',  # Chill Vibes
-        '37i9dQZF1DWV7EzJMK2FUI',  # Chillout Lounge
         '37i9dQZF1DX4E3UdUs7fUx',  # Chilled R&B
         '37i9dQZF1DX2yvmlOdMYzV',  # Chill Pop
-        '37i9dQZF1DX6uQnoHESB3u',  # Chill House
-        '37i9dQZF1DX2P5TYywO77A',  # Evening Acoustic
+        '37i9dQZF1DX4Q2SnB3glnP',  # Late Night Vibes
+        '37i9dQZF1DXa8NOEUWPn9W',  # Winter Chillout
         '37i9dQZF1DX6VdMW310YC7',  # Lo-Fi Beats
-        '37i9dQZF1DX0hvSv9Rf41p',  # Instrumental Chill
         '37i9dQZF1DX6z20IXmBjWI',  # Chilled Out
+        '37i9dQZF1DX2MYNsR7bD8D',  # Chill Tracks
+        '37i9dQZF1DX0h0QnLkMBl4',  # Chillax
     ],
     'Happy': [
         '37i9dQZF1DX3rxVfibe1L0',  # Mood Booster
-        '37i9dQZF1DXdPec7aLTmlC',  # Feelin' Good
         '37i9dQZF1DX7KNKjOK0o75',  # Good Vibes
+        '37i9dQZF1DXdPec7aLTmlC',  # Feelin' Good
         '37i9dQZF1DX0UrRvztWcAU',  # Have a Great Day!
         '37i9dQZF1DX1H4LbvY4OJi',  # Happy Hits!
         '37i9dQZF1DX2sUQwD7tbmL',  # Songs to Sing in the Shower
+        '37i9dQZF1DWYBO1MoTDhZI',  # Wake Up Happy
         '37i9dQZF1DX2A29LI7xHn1',  # Just Smile
         '37i9dQZF1DX4fpCWaHOned',  # Good Vibes Only
-        '37i9dQZF1DWYBO1MoTDhZI',  # Wake Up Happy
-        '37i9dQZF1DX3zN05ePDN6Q',  # It's a Hit!
+        '37i9dQZF1DWYAcBZSAVhl9',  # It's a Hit!
     ],
     'Winter': [
-        '37i9dQZF1DX4H7FFUM2osB',  # Winter Acoustic
-        '37i9dQZF1DXa8NOEUWPn9W',  # Winter Chillout
         '37i9dQZF1DX8CopunbDxgW',  # Classical Essentials
         '37i9dQZF1DX7K31D69s4M1',  # Jazz for Sleep
         '37i9dQZF1DX6VDO8a6cQME',  # Sleep
-        '37i9dQZF1DX1BzILRveYHb',  # Peaceful Meditation
-        '37i9dQZF1DWWEJlAGA9gs0',  # Deep Sleep
+        '37i9dQZF1DX4H7FFUM2osB',  # Winter Acoustic
         '37i9dQZF1DX6xZZEgC9Ubl',  # Chill Folk
         '37i9dQZF1DXbttAJcbphhZ',  # Piano in the Background
-        '37i9dQZF1DWZz0dmtcndFR',  # Calm Vibes
+        '37i9dQZF1DX7Q1kqUWDcIB',  # Classical New Releases
+        '37i9dQZF1DX0SM0LYsmbMT',  # Peaceful Guitar
+        '37i9dQZF1DX4AyFl3yqHeK',  # Calm Before the Storm
+        '37i9dQZF1DX7K31D69s4M1',  # Cozy Jazz
     ],
     'Pop': [
         '37i9dQZF1DXcBWIGoYBM5M',  # Today's Top Hits
         '37i9dQZF1DX1IeqVkK7Ebc',  # Pop Rising
         '37i9dQZF1DWUa8ZRTfalHk',  # All Out 2010s
         '37i9dQZF1DX4dyzvuaRJ0n',  # Confidence Boost
-        '37i9dQZF1DX2A62XvEEcJf',  # Pop International
         '37i9dQZF1DWYfVqUciU2jI',  # New Music Friday
         '37i9dQZF1DXe2bobNYDtW8',  # Pop Right Now
-        '37i9dQZF1DX0s5kDXi1oC5',  # It's a Hit!
         '37i9dQZF1DX5IDTimEWoTd',  # Young & Free
         '37i9dQZF1DX5WUW0kSecNe',  # Metropolis
+        '37i9dQZF1DWXJfnUiYjUKT',  # Hot Hits USA
+        '37i9dQZF1DX3WvGXE8FqYX',  # Ultimate Indie
     ],
 }
 
@@ -172,7 +173,10 @@ def play(request):
 
     access_token = token_info['access_token']
 
-    weather_data = get_weather_data()
+    # Get location from GET parameters
+    location = request.GET.get('location', None)
+
+    weather_data = get_weather_data(location)
     if not weather_data:
         return HttpResponse("Error fetching weather data.")
 
@@ -194,9 +198,10 @@ def play(request):
         'playlist_image': playlist_info['images'][0]['url'] if playlist_info['images'] else None,
         'weather_data': weather_data,
         'genre': genre,
-        'LOCATION': settings.LOCATION,
+        'LOCATION': weather_data['location_name'],
     }
     return render(request, 'home.html', context)
+
 def save_playlist(request):
     if request.method != 'POST':
         return HttpResponse(status=405)  # Method Not Allowed
