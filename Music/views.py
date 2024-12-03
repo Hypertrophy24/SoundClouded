@@ -63,64 +63,20 @@ def get_genre_from_weather(weather_description):
 
 genre_playlists = {
     'Rainy Day': [
-        '37i9dQZF1DXbvABJXBIyiY',  # Rainy Day
-        '37i9dQZF1DX4uPi2roRUwU',  # Rain Sounds
-        '37i9dQZF1DWZd79rJ6a7lp',  # Jazz in the Rain
-        '37i9dQZF1DX9sIqqvKsjG8',  # Evening Chill
-        '37i9dQZF1DXcNb6Ba0LuVc',  # Deep Focus
-        '37i9dQZF1DWXLeA8Omikj7',  # Chill Lofi Study Beats
-        '37i9dQZF1DX7cZxYLqLUJl',  # Atmospheric Calm
-        '37i9dQZF1DX7YCknf2jT6s',  # Rainy Day Jazz
-        '37i9dQZF1DXbITWG1ZJKYt',  # Acoustic Concentration
-        '37i9dQZF1DX4sWSpwq3LiO',  # Peaceful Piano
+        '6by1a3148JOzfqOjDLO4zJ',  # Chill Hits
     ],
     'Chill': [
-        '37i9dQZF1DX4WYpdgoIcn6',  # Chill Hits
-        '37i9dQZF1DX889U0CL85jj',  # Chill Vibes
-        '37i9dQZF1DX4E3UdUs7fUx',  # Chilled R&B
-        '37i9dQZF1DX2yvmlOdMYzV',  # Chill Pop
-        '37i9dQZF1DX4Q2SnB3glnP',  # Late Night Vibes
-        '37i9dQZF1DXa8NOEUWPn9W',  # Winter Chillout
-        '37i9dQZF1DX6VdMW310YC7',  # Lo-Fi Beats
-        '37i9dQZF1DX6z20IXmBjWI',  # Chilled Out
-        '37i9dQZF1DX2MYNsR7bD8D',  # Chill Tracks
-        '37i9dQZF1DX0h0QnLkMBl4',  # Chillax
+        '6by1a3148JOzfqOjDLO4zJ',  # Chill Hits
     ],
     'Happy': [
-        '37i9dQZF1DX3rxVfibe1L0',  # Mood Booster
-        '37i9dQZF1DX7KNKjOK0o75',  # Good Vibes
-        '37i9dQZF1DXdPec7aLTmlC',  # Feelin' Good
-        '37i9dQZF1DX0UrRvztWcAU',  # Have a Great Day!
-        '37i9dQZF1DX1H4LbvY4OJi',  # Happy Hits!
-        '37i9dQZF1DX2sUQwD7tbmL',  # Songs to Sing in the Shower
-        '37i9dQZF1DWYBO1MoTDhZI',  # Wake Up Happy
-        '37i9dQZF1DX2A29LI7xHn1',  # Just Smile
-        '37i9dQZF1DX4fpCWaHOned',  # Good Vibes Only
-        '37i9dQZF1DWYAcBZSAVhl9',  # It's a Hit!
+        '6by1a3148JOzfqOjDLO4zJ',  # Chill Hits
     ],
     'Winter': [
-        '37i9dQZF1DX8CopunbDxgW',  # Classical Essentials
-        '37i9dQZF1DX7K31D69s4M1',  # Jazz for Sleep
-        '37i9dQZF1DX6VDO8a6cQME',  # Sleep
-        '37i9dQZF1DX4H7FFUM2osB',  # Winter Acoustic
-        '37i9dQZF1DX6xZZEgC9Ubl',  # Chill Folk
-        '37i9dQZF1DXbttAJcbphhZ',  # Piano in the Background
-        '37i9dQZF1DX7Q1kqUWDcIB',  # Classical New Releases
-        '37i9dQZF1DX0SM0LYsmbMT',  # Peaceful Guitar
-        '37i9dQZF1DX4AyFl3yqHeK',  # Calm Before the Storm
-        '37i9dQZF1DX7K31D69s4M1',  # Cozy Jazz
+        '6by1a3148JOzfqOjDLO4zJ',  # Chill Hits
     ],
     'Pop': [
-        '37i9dQZF1DXcBWIGoYBM5M',  # Today's Top Hits
-        '37i9dQZF1DX1IeqVkK7Ebc',  # Pop Rising
-        '37i9dQZF1DWUa8ZRTfalHk',  # All Out 2010s
-        '37i9dQZF1DX4dyzvuaRJ0n',  # Confidence Boost
-        '37i9dQZF1DWYfVqUciU2jI',  # New Music Friday
-        '37i9dQZF1DXe2bobNYDtW8',  # Pop Right Now
-        '37i9dQZF1DX5IDTimEWoTd',  # Young & Free
-        '37i9dQZF1DX5WUW0kSecNe',  # Metropolis
-        '37i9dQZF1DWXJfnUiYjUKT',  # Hot Hits USA
-        '37i9dQZF1DX3WvGXE8FqYX',  # Ultimate Indie
+        '6by1a3148JOzfqOjDLO4zJ',  # Chill Hits
+        
     ],
 }
 
