@@ -42,29 +42,19 @@ def get_genre_from_weather(weather_description):
 # Mapping genres to a list of playlist URIs
 genre_playlists = {
     'Rainy Day': [
-        '37i9dQZF1DXbvABJXBIyiY',
-        '37i9dQZF1DWVqJMsgEN0F4',
-        # Add more playlist IDs
+        '6by1a3148JOzfqOjDLO4zJ',
     ],
     'Chill': [
-        '37i9dQZF1DX4WYpdgoIcn6',
-        '37i9dQZF1DX889U0CL85jj',
-        # Add more playlist IDs
+        '6by1a3148JOzfqOjDLO4zJ',
     ],
     'Happy': [
-        '37i9dQZF1DX3rxVfibe1L0',
-        '37i9dQZF1DX1H4LbvY4OJi',
-        # Add more playlist IDs
+        '6by1a3148JOzfqOjDLO4zJ',
     ],
     'Winter': [
-        '37i9dQZF1DX2MyUCsl25eb',
-        '37i9dQZF1DX2yvmlOdMYzV',
-        # Add more playlist IDs
+        '6by1a3148JOzfqOjDLO4zJ',
     ],
     'Pop': [
-        '37i9dQZF1DXcBWIGoYBM5M',
-        '37i9dQZF1DX1IeqVkK7Ebc',
-        # Add more playlist IDs
+        '6by1a3148JOzfqOjDLO4zJ',
     ],
 }
 
