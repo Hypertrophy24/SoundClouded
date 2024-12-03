@@ -16,7 +16,7 @@ from django.views.generic import TemplateView
 logger = logging.getLogger(__name__)
 
 class HomePageView(TemplateView):
-    template_name = 'play.html'
+    template_name = 'home.html'
 
 def favicon(request):
     # Return an empty response with a 204 No Content status
@@ -63,7 +63,10 @@ def get_genre_from_weather(weather_description):
 
 genre_playlists = {
     'Rainy Day': [
-        '6by1a3148JOzfqOjDLO4zJ',  # Chill Hits
+        '37i9dQZF1DX8ymr6UES7vc',
+        '2HOchd0n6m6LoW7Jzak23n', 
+        '67ELSC7ShIIOjVbdGg82Gd',
+        '4BjcUlgOYnLFCywcbxDWIW',# Chill Hits
     ],
     'Chill': [
         '6by1a3148JOzfqOjDLO4zJ',  # Chill Hits
