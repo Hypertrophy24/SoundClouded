@@ -28,7 +28,8 @@ def get_weather_data(location=None):
     url = 'http://api.weatherstack.com/current'
     params = {
         'access_key': settings.WEATHERSTACK_API_KEY,
-        'query': location if location else settings.LOCATION
+        'query': location if location else settings.LOCATION,
+        'units': 'f'  # Set units to Fahrenheit and mph
     }
     response = requests.get(url, params=params)
     data = response.json()
@@ -37,17 +38,16 @@ def get_weather_data(location=None):
         location_name = data['location']['name']
         weather_data = {
             'description': current['weather_descriptions'][0],
-            'temperature': current['temperature'],
-            'feelslike': current['feelslike'],
-            'wind_speed': current['wind_speed'],
+            'temperature': current['temperature'],  # Temperature in Fahrenheit
+            'feelslike': current['feelslike'],      # Feels like temperature in Fahrenheit
+            'wind_speed': current['wind_speed'],    # Wind speed in mph
             'wind_dir': current['wind_dir'],
             'humidity': current['humidity'],
             'icon': current['weather_icons'][0] if 'weather_icons' in current and current['weather_icons'] else None,
             'location_name': location_name,
         }
         return weather_data
-    else:
-        return None
+    return None
 
 def get_genre_from_weather(weather_description):
     """Map weather description to a genre."""
