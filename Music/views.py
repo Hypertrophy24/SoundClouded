@@ -10,7 +10,9 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.http import HttpResponse, JsonResponse
 from spotipy import Spotify, SpotifyOAuth
+from spotipy.exceptions import SpotifyException
 from django.views.generic import TemplateView
+from django.contrib.auth.decorators import login_required
 
 # Setup logging
 logger = logging.getLogger(__name__)
@@ -61,26 +63,13 @@ def get_genre_from_weather(weather_description):
     else:
         return 'Pop'  # Default genre
 
-genre_playlists = {
-    'Rainy Day': [
-        '37i9dQZF1DX8ymr6UES7vc',
-        '2HOchd0n6m6LoW7Jzak23n', 
-        '67ELSC7ShIIOjVbdGg82Gd',
-        '4BjcUlgOYnLFCywcbxDWIW',# Chill Hits
-    ],
-    'Chill': [
-        '6by1a3148JOzfqOjDLO4zJ',  # Chill Hits
-    ],
-    'Happy': [
-        '6by1a3148JOzfqOjDLO4zJ',  # Chill Hits
-    ],
-    'Winter': [
-        '6by1a3148JOzfqOjDLO4zJ',  # Chill Hits
-    ],
-    'Pop': [
-        '6by1a3148JOzfqOjDLO4zJ',  # Chill Hits
-        
-    ],
+
+genre_keywords = {
+    'Rainy Day': ['rain', 'rainy', 'storm', 'thunder', 'lightning', 'cloud'],
+    'Chill': ['chill', 'relax', 'calm', 'mellow', 'smooth', 'easy'],
+    'Happy': ['happy', 'joyful', 'cheerful', 'happiness', 'delightful', 'upbeat'],
+    'Winter': ['winter', 'cold', 'snow', 'ice', 'frost', 'freeze'],
+    'Pop': ['pop', 'top', 'hits', 'popular', 'radio', 'chart'],
 }
 
 
@@ -114,6 +103,7 @@ def callback(request):
     request.session['token_info'] = token_info
     return redirect(reverse('play'))
 
+@login_required
 def play(request):
     token_info = request.session.get('token_info', None)
     if not token_info:
@@ -125,39 +115,83 @@ def play(request):
         redirect_uri=settings.SPOTIFY_REDIRECT_URI
     )
 
-    # Check if the token is expired and refresh it if necessary
+    # Refresh token if expired
     if sp_oauth.is_token_expired(token_info):
         token_info = sp_oauth.refresh_access_token(token_info['refresh_token'])
         request.session['token_info'] = token_info
 
     access_token = token_info['access_token']
+    sp = Spotify(auth=access_token)
 
-    # Get location from GET parameters
+    # Get weather data
     location = request.GET.get('location', None)
-
     weather_data = get_weather_data(location)
     if not weather_data:
         return HttpResponse("Error fetching weather data.")
 
     genre = get_genre_from_weather(weather_data['description'])
-    playlists = genre_playlists.get(genre, genre_playlists['Pop'])
+
+    # Select a random keyword from genre_keywords
+    keywords = genre_keywords.get(genre, ['music'])  # Default to 'music' if genre not found
+    random_keyword = random.choice(keywords)
+
+    try:
+        # Search for playlists
+        random_offset = random.randint(0,25)
+        search_results = sp.search(q=random_keyword, type='playlist', limit=50 , offset=random_offset)
+        playlists = search_results.get('playlists', {}).get('items', [])
+    except Exception as e:
+        return HttpResponse(f"Spotify API error: {e}")
+
     if not playlists:
-        logger.warning("No playlists available for the selected genre.")
-        return HttpResponse("No playlists available for the selected genre.")
+        return HttpResponse("No playlists found for the keyword.")
 
-    sp = Spotify(auth=access_token)
-    playlist_id = random.choice(playlists)  # Randomly select a playlist
-    request.session['playlist_id'] = playlist_id  # Store playlist ID in session
+    # Try to get a valid playlist, retrying if there's an error
+    tried_playlists = set()
+    playlist_info = None
 
-    playlist_info = sp.playlist(playlist_id)
+    while len(tried_playlists) < len(playlists):
+        selected_playlist = random.choice(playlists)
+        try:
+            playlist_id = selected_playlist['id']
+        except Exception as e:
+            logger.error(f"Error getting playlist ID: {e}")
+            continue
+
+        if playlist_id in tried_playlists:
+            continue  # Skip if we've already tried this playlist
+
+        tried_playlists.add(playlist_id)
+
+        try:
+            # Get detailed playlist information
+            playlist_info = sp.playlist(playlist_id)
+            # If successful, break out of the loop
+            break
+        except SpotifyException as e:
+            # Handle exception and try another playlist
+            continue
+
+    if not playlist_info:
+        return HttpResponse("Unable to retrieve a valid playlist after multiple attempts.")
+
+    request.session['playlist_id'] = playlist_id  # Store playlist ID in session if needed
+
+    # Safely get the playlist image URL
+    if playlist_info.get('images') and len(playlist_info['images']) > 0:
+        playlist_image_url = playlist_info['images'][0]['url']
+    else:
+        playlist_image_url = None
 
     context = {
         'playlist_id': playlist_id,
-        'playlist_name': playlist_info['name'],
-        'playlist_image': playlist_info['images'][0]['url'] if playlist_info['images'] else None,
+        'playlist_name': playlist_info.get('name', 'Unknown Playlist'),
+        'playlist_image': playlist_image_url,
         'weather_data': weather_data,
         'genre': genre,
-        'LOCATION': weather_data['location_name'],
+        'LOCATION': weather_data.get('location_name', 'Unknown Location'),
+        'offset': random_offset,
+        'keyword': random_keyword,
     }
     return render(request, 'home.html', context)
 

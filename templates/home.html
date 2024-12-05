@@ -73,6 +73,7 @@
     {% endif %}
 </div>
 
+{% if user.is_authenticated %}
 <!-- JavaScript to Get User's Current Location -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -97,6 +98,7 @@
         }
     });
 </script>
+{% endif %}
 <!-- Include jQuery and Bootstrap JS -->
 <script src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
 <script src="{% static 'js/bootstrap.min.js' %}"></script>
