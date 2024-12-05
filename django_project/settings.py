@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "Accounts",
     "Music",
     "weather_spotify",
+    "widget_tweaks",
     
 ]
 
