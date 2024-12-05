@@ -11,6 +11,7 @@ from django.urls import reverse
 from django.http import HttpResponse, JsonResponse
 from spotipy import Spotify, SpotifyOAuth
 from django.views.generic import TemplateView
+from django.contrib.auth.decorators import login_required
 
 # Setup logging
 logger = logging.getLogger(__name__)
@@ -114,6 +115,7 @@ def callback(request):
     request.session['token_info'] = token_info
     return redirect(reverse('play'))
 
+@login_required
 def play(request):
     token_info = request.session.get('token_info', None)
     if not token_info:
