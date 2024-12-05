@@ -52,7 +52,7 @@ def get_weather_data(location=None):
 def get_genre_from_weather(weather_description):
     """Map weather description to a genre."""
     weather_description = weather_description.lower()
-    if 'rain' in weather_description:
+    if 'rain' or 'mist' in weather_description:
         return 'Rainy Day'
     elif 'cloud' in weather_description:
         return 'Chill'
