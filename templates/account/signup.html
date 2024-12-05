@@ -1,19 +1,67 @@
 {% extends "base.html" %}
-{% load allauth i18n %}
-{% block head_title %}
-    {% trans "Signup" %}
-{% endblock head_title %}
+{% load i18n %}
+{% load allauth account socialaccount %}
+
+{% block title %}
+    {% trans "Sign Up" %}
+{% endblock title %}
+
 {% block content %}
-    {% element h1 %}
-        {% trans "Sign Up" %}
-    {% endelement %}
-    {% setvar link %}
-        <a href="{{ login_url }}">
-        {% endsetvar %}
-        {% setvar end_link %}
-        </a>
-    {% endsetvar %}
-    {% if SOCIALACCOUNT_ENABLED %}
-        {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
-    {% endif %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6 col-lg-4">
+        <div class="text-center mb-5">
+            <h1 class="accent-color">Welcome to SoundClouded</h1>
+            <p class="lead mt-3">Get personalized music recommendations based on your weather</p>
+        </div>
+
+        <!-- Premium Required Notice -->
+        <div class="alert alert-info bg-dark border-accent-color text-white mb-4">
+            <div class="d-flex align-items-center mb-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#1ED760" class="me-2" viewBox="0 0 16 16">
+                    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+                </svg>
+                <strong>Spotify Premium Required</strong>
+            </div>
+            <p class="mb-0">SoundClouded requires a Spotify Premium account to access music features and personalized recommendations.</p>
+        </div>
+
+        {% get_providers as socialaccount_providers %}
+        
+        {% for provider in socialaccount_providers %}
+            {% if provider.id == "spotify" %}
+                <div class="d-grid gap-2">
+                    <a href="{% provider_login_url 'spotify' process='login' %}"
+                       class="btn btn-accent btn-lg">
+                        <div class="d-flex align-items-center justify-content-center">
+                            <!-- Spotify Icon -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="me-2" viewBox="0 0 16 16">
+                                <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm3.669 11.538a.498.498 0 0 1-.686.165c-1.879-1.147-4.243-1.407-7.028-.77a.499.499 0 0 1-.222-.973c3.048-.696 5.662-.397 7.77.892a.5.5 0 0 1 .166.686zm.979-2.178a.624.624 0 0 1-.858.205c-2.15-1.321-5.428-1.704-7.972-.932a.625.625 0 0 1-.362-1.194c2.905-.881 6.517-.454 8.986 1.063a.624.624 0 0 1 .206.858zm.084-2.268C10.154 5.56 5.9 5.419 3.438 6.166a.748.748 0 1 1-.434-1.432c2.825-.857 7.523-.692 10.492 1.07a.747.747 0 1 1-.764 1.288z"/>
+                            </svg>
+                            Continue with Spotify Premium
+                        </div>
+                    </a>
+                </div>
+
+                <div class="text-center mt-4">
+                    <p class="text-light">
+                        Don't have Spotify Premium? 
+                        <a href="https://www.spotify.com/premium" target="_blank" rel="noopener noreferrer" class="accent-color">
+                            Get it here
+                        </a>
+                    </p>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        {% if messages %}
+            <div class="mt-4">
+                {% for message in messages %}
+                    <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-info{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</div>
 {% endblock content %}
