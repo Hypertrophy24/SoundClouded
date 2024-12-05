@@ -28,3 +28,11 @@ urlpatterns = [
     path('', include('Music.urls')),
 
 ]
+
+from django.conf import settings
+from debug_toolbar.toolbar import debug_toolbar_urls
+
+if not settings.TESTING:
+    urlpatterns = [
+        *urlpatterns,
+    ] + debug_toolbar_urls()

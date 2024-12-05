@@ -6,67 +6,71 @@
 <!-- Include Bootstrap CSS -->
 <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
 
-<style>
-    /* Your existing styles */
-</style>
 
 {% block content %}
-<div class="container mt-4 text-center" style="color: #c0bebe; background-color: #333; min-height: 100vh; padding: 20px;">
-    <h1 style="color: #FF7F50; text-shadow: 1px 1px 2px black;">Welcome to SoundClouded</h1>
+<div class="container mt-4 text-center">
+    <h1 class="accent-color" style="text-shadow: 1px 1px 2px black;">Welcome to SoundClouded</h1>
     {% if user.is_authenticated %}
         <p style="text-shadow: 1px 1px 2px black;">Welcome back, <strong>{{ user.username }}</strong>!</p>
-        <!-- Additional user info if needed -->
         <form action="{% url 'account_logout' %}" method="post">
             {% csrf_token %}
-            <button class="btn btn-secondary mt-2" type="submit">Log Out</button>
+            <button class="btn btn-accent" type="submit">Log Out</button>
         </form>
     {% else %}
-        <p style="color: #c0bebe; text-shadow: 1px 1px 2px black;">Please log in to access personalized music recommendations.</p>
-        <a href="{% url 'account_login' %}" class="btn btn-outline-secondary me-2">Log In</a>
-        <a href="{% url 'account_signup' %}" class="btn btn-outline-secondary">Sign Up</a>
+        <p style="text-shadow: 1px 1px 2px black;">Please log in to access personalized music recommendations.</p>
+        <a href="{% url 'account_login' %}" class="btn btn-accent me-2">Log In</a>
+        <a href="{% url 'account_signup' %}" class="btn btn-accent">Sign Up</a>
     {% endif %}
 
-    <hr style="border-color: #FF7F50;">
+    <hr>
+
     {% if user.is_authenticated %}
     <!-- Weather Search Feature -->
-    <div class="mt-4" style="color: #c0bebe;">
-        <h3 style="color: #FF7F50; text-shadow: 1px 1px 2px black;">Get Music Recommendations Based on the Weather</h3>
+    <div class="mt-4">
+        <h3 class="accent-color" style="text-shadow: 1px 1px 2px black;">Get Music Recommendations Based on the Weather</h3>
         <p style="text-shadow: 1px 1px 2px black;">Enter a city to get recommendations for that location.</p>
         <form method="get" action="">
             <input type="text" name="location" placeholder="Enter city" class="form-control mb-3" style="max-width: 300px; margin: auto;">
-            <button type="submit" class="btn btn-primary" style="background-color: #FF7F50; border: none;">Search</button>
+            <button type="submit" class="btn btn-accent" style="border: none;">Search</button>
         </form>
     </div>
 
-    <!-- Weather Information -->
-    <div class="weather-container text-center">
-        <h1>Current Weather in {{ weather_data.location_name }}</h1>
-        {% if weather_data.icon %}
-            <img src="{{ weather_data.icon }}" alt="Weather Icon">
-        {% endif %}
-        <h2>{{ weather_data.description }}</h2>
-        <p>Temperature: {{ weather_data.temperature }}°C</p>
-        <p>Feels Like: {{ weather_data.feelslike }}°C</p>
-        <p>Wind: {{ weather_data.wind_speed }} km/h {{ weather_data.wind_dir }}</p>
-        <p>Humidity: {{ weather_data.humidity }}%</p>
+    <!-- Weather and Playlist Container -->
+    <div class="container mt-5">
+        <div class="row">
+            <!-- Weather Information -->
+            <div class="col-md-4">
+                <div class="weather-container text-center">
+                    <h1 class="accent-color">Current Weather in {{ weather_data.location_name }}</h1>
+                    {% if weather_data.icon %}
+                        <img src="{{ weather_data.icon }}" alt="Weather Icon">
+                    {% endif %}
+                    <h2>{{ weather_data.description }}</h2>
+                    <p>Temperature: {{ weather_data.temperature }}°C</p>
+                    <p>Feels Like: {{ weather_data.feelslike }}°C</p>
+                    <p>Wind: {{ weather_data.wind_speed }} km/h {{ weather_data.wind_dir }}</p>
+                    <p>Humidity: {{ weather_data.humidity }}%</p>
+                </div>
+            </div>
+
+            <!-- Playlist Information -->
+            <div class="col-md-8">
+                <div class="playlist-container text-center">
+                    <h2 class="accent-color">Recommended Playlist: {{ playlist_name }}</h2>
+                    <!-- Spotify Embed Widget -->
+                    <iframe 
+                        src="https://open.spotify.com/embed/playlist/{{ playlist_id }}" 
+                        width="100%" 
+                        height="380" 
+                        frameborder="0" 
+                        allowtransparency="true" 
+                        allow="encrypted-media">
+                    </iframe>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <!-- Playlist Information -->
-    <div class="playlist-container text-center">
-        <h2>Recommended Playlist: {{ playlist_name }}</h2>
-        {% if playlist_image %}
-            <img src="{{ playlist_image }}" alt="{{ playlist_name }}" class="img-fluid mb-3">
-        {% endif %}
-
-        <!-- Spotify Embed Widget -->
-        <iframe src="https://open.spotify.com/embed/playlist/{{ playlist_id }}" width="100%" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-
-        <!-- Save Playlist Button -->
-        <form id="save-playlist-form" method="POST" action="{% url 'save_playlist' %}">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-primary mt-3">Save Playlist to Your Spotify Account</button>
-        </form>
-    </div>
+    {% endif %}
 </div>
 
 <!-- JavaScript to Get User's Current Location -->
@@ -93,7 +97,6 @@
         }
     });
 </script>
-{% endif %}
 <!-- Include jQuery and Bootstrap JS -->
 <script src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
 <script src="{% static 'js/bootstrap.min.js' %}"></script>
