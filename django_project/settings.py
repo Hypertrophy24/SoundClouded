@@ -11,7 +11,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-
+import environ 
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,7 +27,6 @@ SECRET_KEY = "django-insecure-k-s_+-cs7cgkripi!ia0r5n^b_%_yx(tsbg^xvp+6f3eiuvpm8
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -156,8 +156,8 @@ INTERNAL_IPS = [
 SOCIALACCOUNT_PROVIDERS = {
     "spotify": {
         "APP": {
-            "client_id": "8313462db77a40e297078f1bd0a4cc8c",
-            "secret": "6aa7bd1d6b27470c8e1cd32f285aec21",
+            "client_id": "7784a2b1e1344a2db317361f967bfb31",
+            "secret": "5c589f299e294566a34d86e50f4cea65",
         }
     }
 }
