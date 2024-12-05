@@ -35,34 +35,40 @@
         </form>
     </div>
 
-    <!-- Weather Information -->
-    <div class="weather-container text-center mt-5">
-        <h1>Current Weather in {{ weather_data.location_name }}</h1>
-        {% if weather_data.icon %}
-            <img src="{{ weather_data.icon }}" alt="Weather Icon">
-        {% endif %}
-        <h2>{{ weather_data.description }}</h2>
-        <p>Temperature: {{ weather_data.temperature }}°C</p>
-        <p>Feels Like: {{ weather_data.feelslike }}°C</p>
-        <p>Wind: {{ weather_data.wind_speed }} km/h {{ weather_data.wind_dir }}</p>
-        <p>Humidity: {{ weather_data.humidity }}%</p>
-    </div>
+    <!-- Weather and Playlist Container -->
+    <div class="container mt-5">
+        <div class="row">
+            <!-- Weather Information -->
+            <div class="col-md-4">
+                <div class="weather-container text-center">
+                    <h1 class="accent-color">Current Weather in {{ weather_data.location_name }}</h1>
+                    {% if weather_data.icon %}
+                        <img src="{{ weather_data.icon }}" alt="Weather Icon">
+                    {% endif %}
+                    <h2>{{ weather_data.description }}</h2>
+                    <p>Temperature: {{ weather_data.temperature }}°C</p>
+                    <p>Feels Like: {{ weather_data.feelslike }}°C</p>
+                    <p>Wind: {{ weather_data.wind_speed }} km/h {{ weather_data.wind_dir }}</p>
+                    <p>Humidity: {{ weather_data.humidity }}%</p>
+                </div>
+            </div>
 
-    <!-- Playlist Information -->
-    <div class="playlist-container text-center mt-5">
-        <h2 class="accent-color">Recommended Playlist: {{ playlist_name }}</h2>
-        {% if playlist_image %}
-            <img src="{{ playlist_image }}" alt="{{ playlist_name }}" class="img-fluid mb-3">
-        {% endif %}
-
-        <!-- Spotify Embed Widget -->
-        <iframe src="https://open.spotify.com/embed/playlist/{{ playlist_id }}" width="100%" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-
-        <!-- Save Playlist Button -->
-        <form id="save-playlist-form" method="POST" action="{% url 'save_playlist' %}">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-accent mt-3">Save Playlist to Your Spotify Account</button>
-        </form>
+            <!-- Playlist Information -->
+            <div class="col-md-8">
+                <div class="playlist-container text-center">
+                    <h2 class="accent-color">Recommended Playlist: {{ playlist_name }}</h2>
+                    <!-- Spotify Embed Widget -->
+                    <iframe 
+                        src="https://open.spotify.com/embed/playlist/{{ playlist_id }}" 
+                        width="100%" 
+                        height="380" 
+                        frameborder="0" 
+                        allowtransparency="true" 
+                        allow="encrypted-media">
+                    </iframe>
+                </div>
+            </div>
+        </div>
     </div>
     {% endif %}
 </div>
