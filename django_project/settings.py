@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "Accounts",
     "Music",
     "weather_spotify",
+    
 ]
 
 MIDDLEWARE = [
@@ -147,6 +148,11 @@ AUTHENTICATION_BACKENDS = [
     "allauth.account.auth_backends.AuthenticationBackend",
 ]
 
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
+
+
 SOCIALACCOUNT_PROVIDERS = {
     "spotify": {
         "APP": {
@@ -156,7 +162,7 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-import environ 
+import environ, sys
 
 env = environ.Env(
     DEBUG=(bool, False)
@@ -173,3 +179,16 @@ SPOTIFY_REDIRECT_URI = env('SPOTIFY_REDIRECT_URI')
 SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG')
 ALLOWED_HOSTS = []
+
+TESTING = "test" in sys.argv
+
+if not TESTING:
+    INSTALLED_APPS = [
+        *INSTALLED_APPS,
+        "debug_toolbar",
+    ]
+    MIDDLEWARE = [
+        "debug_toolbar.middleware.DebugToolbarMiddleware",
+        *MIDDLEWARE,
+    ]
+    
